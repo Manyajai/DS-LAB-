@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define QSIZE 5
+
+void push(int q[], int *rear, int item) {
+    if (*rear == QSIZE - 1) {
+        printf("Queue overflow\n");
+        return;
+    }
+    q[++(*rear)] = item;
+}
+
+int pop(int q[], int *rear, int *front) {
+    if (*front > *rear) {
+        printf("Queue underflow\n");
+        return 0;
+    }
+    return q[(*front)++];
+}
+
+void display(int q[], int *rear, int *front) {
+    if (*front > *rear) {
+        printf("Queue underflow\n");
+        return;
+    }
+    printf("Queue contents: ");
+    for (int i = *front; i <= *rear; i++) {
+        printf("%d ", q[i]);
+    }
+    printf("\n");
+}
+
+void main() {
+    int q[QSIZE];
+    int front = 0;
+    int rear = -1;
+    int choice, item, deleted;
+
+    printf("Name: Manya Jain\n");
+    printf("USN: 1BM23CS371\n\n");
+
+    while (1) {
+        printf("\nMenu:\n");
+        printf("1. INSERT\n");
+        printf("2. POP\n");
+        printf("3. DISPLAY\n");
+        printf("4. EXIT\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter item to insert: ");
+                scanf("%d", &item);
+                push(q, &rear, item);
+                break;
+
+            case 2:
+                deleted = pop(q, &rear, &front);
+                if (deleted != 0)
+                    printf("Deleted item: %d\n", deleted);
+                break;
+
+            case 3:
+                display(q, &rear, &front);
+                break;
+
+            case 4:
+                printf("Exiting program.\n");
+                exit(0);
+
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+}
