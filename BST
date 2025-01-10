@@ -1,0 +1,98 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node {
+    int key;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+Node* createnode(int key) {
+    Node* newnode = (Node*)malloc(sizeof(Node));
+    newnode->key = key;
+    newnode->left = NULL;
+    newnode->right = NULL;
+    return newnode;
+}
+
+Node* insert(Node* root, int key) {
+    if (root == NULL) {
+        return createnode(key);
+    } else if (key < root->key) {
+        root->left = insert(root->left, key);
+    } else if (key > root->key) {
+        root->right = insert(root->right, key);
+    }
+    return root;
+}
+
+void inorder(Node* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        printf("%d ", root->key);
+        inorder(root->right);
+    }
+}
+
+void preorder(Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->key);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+void postorder(Node* root) {
+    if (root != NULL) {
+        postorder(root->left);
+        postorder(root->right);
+        printf("%d ", root->key);
+    }
+}
+
+int main() {
+    Node* root = NULL;
+    int choice;
+    int key;
+
+    // Print USN and Name
+    printf("Name: Manya Jain\n");
+    printf("USN: 1BM23CS371\n");
+
+    while (1) {
+        printf("\n1. Insert into the tree\n");
+        printf("2. Display elements: Inorder traversal\n");
+        printf("3. Display elements: Preorder traversal\n");
+        printf("4. Display elements: Postorder traversal\n");
+        printf("5. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter the value to insert:\n");
+                scanf("%d", &key);
+                root = insert(root, key);
+                break;
+            case 2:
+                printf("Inorder traversal: ");
+                inorder(root);
+                printf("\n");
+                break;
+            case 3:
+                printf("Preorder traversal: ");
+                preorder(root);
+                printf("\n");
+                break;
+            case 4:
+                printf("Postorder traversal: ");
+                postorder(root);
+                printf("\n");
+                break;
+            case 5:
+                printf("Exiting the program.\n");
+                return 0;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
