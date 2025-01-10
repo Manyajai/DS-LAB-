@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+    int value;
+    struct node *next;
+};
+typedef struct node* NODE;
+NODE getnode(int item) {
+    NODE new_node = (NODE)malloc(sizeof(struct node));
+    if (new_node == NULL) {
+        printf("Memory allocation failed\n");
+        return NULL;
+    }
+    new_node->value = item;
+    new_node->next = NULL;
+    return new_node;
+}
+NODE insert_beg(NODE *first, int item) {
+    NODE newnode = getnode(item);
+    if (newnode == NULL) return *first;
+    newnode->next = *first;
+    *first = newnode;
+    return *first;
+}
+NODE insert_end(NODE *first, int item) {
+    NODE newnode = getnode(item);
+    if (newnode == NULL) return *first;
+    if (*first == NULL) {
+        *first = newnode;
+        return *first;
+    }
+    NODE curr = *first;
+    while (curr->next != NULL) {
+        curr = curr->next;
+    }
+    curr->next = newnode;
+    return *first;
+}
+NODE delete_beg(NODE *first) {
+    if (*first == NULL) {
+        printf("Linked list is empty\n");
+        return NULL;
+    }
+    NODE temp = *first;
+    *first = temp->next;
+    free(temp);
+    return *first;
+}
+void display(NODE first) {
+    if (first == NULL) {
+        printf("EMPTY\n");
+        return;
+    }
+    NODE curr = first;
+    while (curr != NULL) {
+        printf("%d ", curr->value);
+        curr = curr->next;
+    }
+}
+void push(NODE *stack, int item) {
+    insert_beg(stack, item);
+}
+void pop(NODE *stack) {
+    if (*stack == NULL) {
+        printf("Stack underflow: Stack is empty\n");
+        return;
+    }
+    printf("Popped %d from stack\n", (*stack)->value);
+    delete_beg(stack);
+}
+void enqueue(NODE *queue, int item) {
+    insert_end(queue, item);
+}
+void dequeue(NODE *queue) {
+    if (*queue == NULL) {
+        printf("Queue underflow: Queue is empty\n");
+        return;
+    }
+    printf("Dequeued %d from queue\n", (*queue)->value);
+    delete_beg(queue);
+}
+int main() {
+    NODE stack = NULL;
+    NODE queue = NULL;
+    int choice;
+    int item;
+    while (1) {
+        printf("\nChoose operation:\n");
+        printf("1. Push (Stack)\n");
+        printf("2. Pop (Stack)\n");
+        printf("3. Enqueue (Queue)\n");
+        printf("4. Dequeue (Queue)\n");
+        printf("5. Display Stack\n");
+        printf("6. Display Queue\n");
+        printf("7. Exit\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter item to push onto stack: ");
+                scanf("%d", &item);
+                push(&stack, item);
+                break;
+            case 2:
+                pop(&stack);
+                break;
+            case 3:
+                printf("Enter item to enqueue to queue: ");
+                scanf("%d", &item);
+                enqueue(&queue, item);
+                break;
+            case 4:
+                dequeue(&queue);
+                break;
+            case 5:
+                printf("Stack: ");
+                display(stack);
+                break;
+            case 6:
+                printf("Queue: ");
+                display(queue);
+                break;
+            case 7:
+                exit(0);
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+    }
+    return 0;
+}
