@@ -1,0 +1,177 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+    int value;
+    struct node *next;
+};
+typedef struct node* NODE;
+NODE getnode(int item) {
+    NODE new_node = (NODE)malloc(sizeof(struct node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->value = item;
+    new_node->next = NULL;
+    return new_node;
+}
+NODE insert_beg(NODE *first, int item) {
+    NODE newnode = getnode(item);
+    if (newnode == NULL) return *first;
+    newnode->next = *first;
+    *first = newnode;
+    return *first;
+}
+NODE insert_end(NODE *first, int item) {
+    NODE newnode = getnode(item);
+    if (newnode == NULL) return *first;
+    if (*first == NULL) {
+        *first = newnode;
+        return *first;
+    }
+    NODE curr = *first;
+    while (curr->next != NULL) {
+        curr = curr->next;
+    }
+    curr->next = newnode;
+    return *first;
+}
+NODE insert_pos(NODE *first, int item, int pos) {
+    NODE newnode = getnode(item);
+    if (newnode == NULL) return *first;
+    if (*first == NULL && pos != 0) {
+        free(newnode);
+        return *first;
+    }
+    if (pos == 0) {
+        newnode->next = *first;
+        *first = newnode;
+        return *first;
+    }
+    NODE prev = NULL;
+    NODE curr = *first;
+    int count = 0;
+    while (curr != NULL && count < pos) {
+        prev = curr;
+        curr = curr->next;
+        count++;
+    }
+    if (prev != NULL) {
+        prev->next = newnode;
+    }
+    newnode->next = curr;
+    return *first;
+}
+NODE delete_beg(NODE *first) {
+    if (*first == NULL) {
+        printf("Linked list is empty\n");
+        return NULL;
+    }
+    NODE temp = *first;
+    *first = temp->next;
+    free(temp);
+    return *first;
+}
+NODE delete_end(NODE *first) {
+    if (*first == NULL) {
+        printf("Linked list is empty\n");
+        return NULL;
+    }
+    if ((*first)->next == NULL) {
+        free(*first);
+        *first = NULL;
+        return *first;
+    }
+    NODE prev = NULL;
+    NODE curr = *first;
+    while (curr->next != NULL) {
+        prev = curr;
+        curr = curr->next;
+    }
+    prev->next = NULL;
+    free(curr);
+    return *first;
+}
+NODE delete_val(NODE *first, int val) {
+    NODE prev = NULL;
+    NODE curr = *first;
+    if (*first == NULL) {
+        printf("Linked list is empty\n");
+        return NULL;
+    }
+    while (curr != NULL && curr->value != val) {
+        prev = curr;
+        curr = curr->next;
+    }
+    if (curr == NULL) { // Value not found
+        printf("Value not found\n");
+        return *first;
+    }
+    if (prev == NULL) {
+        *first = curr->next;
+    } else {
+        prev->next = curr->next;
+    }
+    free(curr);
+    return *first;
+}
+void display(NODE first) {
+    if (first == NULL) {
+        printf("EMPTY\n");
+        return;
+    }
+    NODE curr = first;
+    while (curr != NULL) {
+        printf("%d\n", curr->value);
+        curr = curr->next;
+    }
+}
+int main() {
+    NODE first = NULL;
+    int choice;
+    int item;
+    int pos;
+    int value;
+    while (1) {
+        printf("Enter 1.INSERT at beginning 2.Insert at end 3.Insert at a position  4.Delete beginning  5.Delete end   6.Delete according to value   7.DISPLAY 8.EXIT\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter item:\n");
+                scanf("%d", &item);
+                insert_beg(&first, item);
+                break;
+            case 2:
+                printf("Enter item:\n");
+                scanf("%d", &item);
+                insert_end(&first, item);
+                break;
+            case 3:
+                printf("Enter item:\n");
+                scanf("%d", &item);
+                printf("Enter position:\n");
+                scanf("%d", &pos);
+                insert_pos(&first, item, pos);
+                break;
+            case 4:
+                delete_beg(&first);
+                break;
+            case 5:
+                delete_end(&first);
+                break;
+            case 6:
+                printf("Enter value:\n");
+                scanf("%d", &value);
+                delete_val(&first, value);
+                break;
+            case 7:
+                display(first);
+                break;
+            case 8:
+                exit(0);
+            default:
+                printf("Invalid\n");
+                break;
+        }
+    }
+    return 0;
+}
