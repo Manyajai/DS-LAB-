@@ -1,0 +1,89 @@
+#include <stdio.h>
+
+// Function Prototypes
+void dfs(int v, int adj[10][10], int visited[], int stack[], int n);
+int hasCycle(int v, int adj[10][10], int visited[], int stack[], int n);
+int isConnected(int adj[10][10], int n);
+
+// Global Variables
+int n, i, j, a[10][10], vis[10], cycleVis[10], stack[10];
+
+int main() {
+    // Print Name and USN
+    printf("Name: Manya Jain\n");
+    printf("USN: 1BM23CS371\n");
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    // Input adjacency matrix
+    printf("Enter the adjacency matrix (for directed graph):\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            scanf("%d", &a[i][j]);
+        }
+        vis[i] = 0;
+        cycleVis[i] = 0;  
+        stack[i] = 0;  
+    }
+
+    // Check if the graph is connected
+    if (isConnected(a, n)) {
+        printf("The graph is connected.\n");
+    } else {
+        printf("The graph is not connected.\n");
+    }
+
+    // Check if the graph has a cycle
+    for (i = 0; i < n; i++) vis[i] = 0;  // Reset visited array
+    if (hasCycle(0, a, vis, stack, n)) {
+        printf("The graph has a cycle.\n");
+    } else {
+        printf("The graph does not have a cycle.\n");
+    }
+
+    return 0;
+}
+
+// DFS Function
+void dfs(int v, int adj[10][10], int visited[], int stack[], int n) {
+    visited[v] = 1;
+    for (int j = 0; j < n; j++) {
+        if (adj[v][j] == 1 && !visited[j]) {
+            dfs(j, adj, visited, stack, n);
+        }
+    }
+}
+
+// Function to check if the graph is connected
+int isConnected(int adj[10][10], int n) {
+    int visited[10] = {0};    
+    dfs(0, adj, visited, stack, n);  // Perform DFS starting from vertex 0
+    for (i = 0; i < n; i++) {
+        if (visited[i] == 0) {
+            return 0; // If any vertex is not visited, the graph is not connected
+        }
+    }
+    return 1;  // All vertices are visited, so the graph is connected
+}
+
+// Function to detect a cycle in the graph
+int hasCycle(int v, int adj[10][10], int visited[], int stack[], int n) {
+    visited[v] = 1;
+    stack[v] = 1;
+
+    for (int j = 0; j < n; j++) {
+        if (adj[v][j] == 1) {
+            // If the adjacent vertex is already in the stack, a cycle is detected
+            if (stack[j] == 1) {
+                return 1; 
+            }
+            // If the adjacent vertex is not visited, recursively check for a cycle
+            if (visited[j] == 0 && hasCycle(j, adj, visited, stack, n)) {
+                return 1;  
+            }
+        }
+    }
+    stack[v] = 0;  // Remove the vertex from the stack after visiting
+    return 0;
+}
