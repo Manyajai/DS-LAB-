@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+    int value;
+    struct node *prev;
+    struct node *next;
+};
+typedef struct node* NODE;
+NODE getnode(int item) {
+    NODE new_node = (NODE)malloc(sizeof(struct node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->value = item;
+    new_node->prev = NULL;
+    new_node->next = NULL;
+    return new_node;
+}
+NODE insert_left(NODE head, int target, int item) {
+    NODE curr = head;
+    NODE newnode = getnode(item);
+    if (newnode == NULL) return head;
+   
+    while (curr != NULL && curr->value != target) {
+        curr = curr->next;
+    }
+    if (curr == NULL) {
+        printf("Target value not found.\n");
+        free(newnode);
+        return head;
+    }
+    newnode->next = curr;
+    newnode->prev = curr->prev;
+    if (curr->prev != NULL) {
+        curr->prev->next = newnode;
+    } else {
+        head = newnode; 
+    }
+    curr->prev = newnode;
+    return head;
+}
+NODE delete_val(NODE head, int val) {
+    NODE curr = head;
+    
+    while (curr != NULL && curr->value != val) {
+        curr = curr->next;
+    }
+    if (curr == NULL) {
+        printf("Value not found.\n");
+        return head;
+    }
+   
+    if (curr->prev != NULL) {
+        curr->prev->next = curr->next;
+    } else {
+        head = curr->next; 
+    }
+    if (curr->next != NULL) {
+        curr->next->prev = curr->prev;
+    }
+    free(curr);
+    return head;
+}
+void display(NODE head) {
+    if (head == NULL) {
+        printf("EMPTY\n");
+        return;
+    }
+    NODE curr = head;
+    while (curr != NULL) {
+        printf("%d ", curr->value);
+        curr = curr->next;
+    }
+    printf("\n");
+}
+int main() {
+    NODE head = NULL;
+    int choice, item, target;
+    while (1) {
+        printf("1. Create Doubly Linked List (Add to End)\n");
+        printf("2. Insert Node to the Left of a Value\n");
+        printf("3. Delete Node by Value\n");
+        printf("4. Display List\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter value to insert: ");
+                scanf("%d", &item);
+                if (head == NULL) {
+                    head = getnode(item);
+                } else {
+                    NODE curr = head;
+                    while (curr->next != NULL) {
+                        curr = curr->next;
+                    }
+                    NODE newnode = getnode(item);
+                    curr->next = newnode;
+                    newnode->prev = curr;
+                }
+                break;
+            case 2:
+                printf("Enter the target value: ");
+                scanf("%d", &target);
+                printf("Enter the value to insert: ");
+                scanf("%d", &item);
+                head = insert_left(head, target, item);
+                break;
+            case 3:
+                printf("Enter value to delete: ");
+                scanf("%d", &item);
+                head = delete_val(head, item);
+                break;
+            case 4:
+                display(head);
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+    }
+    return 0;
+}
